@@ -1,0 +1,3 @@
+export const EFFECT_LOADING = {
+  GET_MESSAGES: 'GET_MESSAGES'
+}

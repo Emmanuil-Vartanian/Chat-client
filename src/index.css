@@ -1,0 +1,19 @@
+@font-face {
+  font-family: 'Geometrica';
+  src: url('assets/font/geometrica-sans-regular.ttf');
+}
+
+body {
+  margin: 0;
+}
+
+body,
+#root,
+.App {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.App {
+  background-color: #e6e6e68a;
+}
