@@ -12,23 +12,23 @@ const readingMessage = createAction(
 )()
 
 /* REDUCER ACTIONS */
-const setStartMyMessagesToStore = createAction(
-  MessageActionTypes.SET_START_MY_MESSAGES_TO_STORE,
-  (messages: Record<string, any>[]) => messages
-)()
-
 const setMyMessagesToStore = createAction(
   MessageActionTypes.SET_MY_MESSAGES_TO_STORE,
   (messages: Record<string, any>[]) => messages
 )()
 
-const setReadMessageToStore = createAction(MessageActionTypes.SET_READ_MESSAGE_TO_STORE)()
+const setAddMessageToStore = createAction(
+  MessageActionTypes.SET_ADD_MESSAGE_TO_STORE,
+  (messages: Record<string, any>[]) => messages
+)()
+
+const setReadMessagesToStore = createAction(MessageActionTypes.SET_READ_MESSAGES_TO_STORE)()
 
 export {
   getMyMessages,
-  setStartMyMessagesToStore,
   setMyMessagesToStore,
+  setAddMessageToStore,
   createMessage,
   readingMessage,
-  setReadMessageToStore
+  setReadMessagesToStore
 }

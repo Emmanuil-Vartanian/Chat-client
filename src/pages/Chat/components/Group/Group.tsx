@@ -9,8 +9,17 @@ import MenuIcon from '@mui/icons-material/Menu'
 
 import { GroupContainer, ChatInfo, ListChatBlock } from './style'
 
-import { getMyGroups, getSearchUsers, setSearchUsersToStore } from './store/actions'
-import { getMyGroupsSelector, getSearchUsersSelector } from './store/reducers/selectors'
+import {
+  getMyGroups,
+  getSearchUsers,
+  setSearchUsersToStore,
+  setSearchValueToStore
+} from './store/actions'
+import {
+  getMyGroupsSelector,
+  getSearchUsersSelector,
+  getSearchValueSelector
+} from './store/reducers/selectors'
 import { getCurrentUserIdSelector } from 'pages/Login/store/reducers/selectors'
 import InputField from 'components/FormFields/InputField'
 import { Form } from 'react-final-form'
@@ -23,6 +32,7 @@ const Group: React.FC = () => {
   const userId = useSelector(getCurrentUserIdSelector)
   const groups = useSelector(getMyGroupsSelector)
   const searchUsers = useSelector(getSearchUsersSelector)
+  const searchValue = useSelector(getSearchValueSelector)
 
   searchUsers.map(user => {
     user.user = user
@@ -32,13 +42,10 @@ const Group: React.FC = () => {
     }
   })
 
-  const handleFormSubmit = data => {
-    console.log(data)
-  }
-
-  const handleSearchUsers = e => {
-    if (e.target.value) {
-      dispatch(getSearchUsers(e.target.value))
+  const handleFormSubmit = ({ search }) => {
+    if (search) {
+      dispatch(getSearchUsers(search))
+      dispatch(setSearchValueToStore(search))
     } else {
       dispatch(setSearchUsersToStore([]))
     }
@@ -53,8 +60,8 @@ const Group: React.FC = () => {
   }, [])
 
   useEffect(() => {
-    const groupsIds = groups?.map(({ id }) => id)
-    socket.emit('enterGroup', groupsIds)
+    const groupIds = groups?.map(({ id }) => id)
+    socket.emit('enterGroup', groupIds)
   }, [groups])
 
   return (
@@ -81,14 +88,15 @@ const Group: React.FC = () => {
 
         <Form
           onSubmit={handleFormSubmit}
+          initialValues={{ search: searchValue }}
           render={({ handleSubmit }) => (
-            <form id={'login-user-form'} onSubmit={handleSubmit}>
+            <form id={'search-user-form'} onSubmit={handleSubmit}>
               <div className="search-input">
                 <InputField
                   name="search"
                   variant="standard"
                   placeholder="Search"
-                  onHandleChange={handleSearchUsers}
+                  onHandleChange={handleSubmit}
                   endAdornment={<SearchOutlinedIcon />}
                 />
               </div>

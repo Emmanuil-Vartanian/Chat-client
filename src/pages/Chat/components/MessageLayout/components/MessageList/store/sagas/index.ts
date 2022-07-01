@@ -6,11 +6,12 @@ import { MessageActionTypes } from '../types'
 import { getMyGroupSelector } from 'pages/Chat/components/Group/store/reducers/selectors'
 import { getCurrentUserIdSelector } from 'pages/Login/store/reducers/selectors'
 import moment from 'moment'
-import { setMyMessagesToStore, setStartMyMessagesToStore } from '../actions'
+import { setAddMessageToStore, setMyMessagesToStore } from '../actions'
 import socket from 'services/socket'
-import { getMyGroups } from 'pages/Chat/components/Group/store/actions'
+import { getMyGroup, getMyGroups } from 'pages/Chat/components/Group/store/actions'
 import { clearEffectLoading, setEffectLoading } from 'containers/App/store/actions'
 import { EFFECT_LOADING } from 'constants/effectLoading'
+import { getMyGroupAPI } from 'pages/Chat/components/Group/store/api'
 
 export function* getMyMessageSaga(action): SagaIterator {
   const groupId = action.payload
@@ -22,7 +23,7 @@ export function* getMyMessageSaga(action): SagaIterator {
 
     if (status === 200) {
       if (data.list.length) {
-        yield put(setStartMyMessagesToStore(data.list))
+        yield put(setMyMessagesToStore(data.list))
       }
       yield put(getMyGroups(userId))
       yield put(clearEffectLoading(EFFECT_LOADING.GET_MESSAGES))
@@ -48,11 +49,21 @@ export function* createMessageSaga(action): SagaIterator {
       group: group.id || 'createGroup'
     }
     const { data, status } = yield call(createMessageAPI, messageData)
-
     if (status === 201) {
       yield put(getMyGroups(myUserId))
-      socket.emit('addMessage', { groupId: group.id, userId: group.user.id, message: data })
-      yield put(setMyMessagesToStore(data))
+      socket.emit('addMessage', {
+        groupId: group.id,
+        userId: group.user.id,
+        message: data
+      })
+      yield put(setAddMessageToStore(data))
+      if (!Object.keys(group).includes('id')) {
+        yield put(getMyGroup(myUserId, group.user.id))
+        const { data, status } = yield call(getMyGroupAPI, group.user.id, myUserId)
+        if (status === 200) {
+          socket.emit('createChat', data)
+        }
+      }
     }
   } catch (error) {
     const { response } = error
@@ -70,14 +81,9 @@ export function* readingMessageSaga(action): SagaIterator {
     const { data, status } = yield call(readingMessageAPI, { messageIds: ids })
 
     if (status === 201) {
-      // if (data.length > 1) {
-      yield put(getMyGroups(myUserId))
+      console.log(data)
       socket.emit('readingMessage', data[0].group.id)
       yield put(getMyGroups(myUserId))
-      // } else {
-      //   console.log('first')
-      //   yield put(getMyGroups(myUserId))
-      // }
     }
   } catch (error) {
     const { response } = error

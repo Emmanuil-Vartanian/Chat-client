@@ -55,7 +55,9 @@ const MessageList: React.FC<MessageListProps> = ({ messages }) => {
   }, [messages])
 
   useEffect(() => {
-    dispatch(readingMessage(unreadMessages(messages)))
+    if (unreadMessages(messages).length) {
+      dispatch(readingMessage(unreadMessages(messages)))
+    }
   }, [messages])
 
   return (

@@ -19,6 +19,11 @@ const setMyGroupsToStore = createAction(
   (groups: Record<string, any>[]) => groups
 )()
 
+const setAddGroupToStore = createAction(
+  GroupActionTypes.SET_ADD_GROUP_TO_STORE,
+  (group: Record<string, any>) => group
+)()
+
 const setMyGroupToStore = createAction(
   GroupActionTypes.SET_MY_GROUP_TO_STORE,
   (group: Record<string, any>) => group
@@ -34,6 +39,11 @@ const setUserToStore = createAction(
   (user: Record<string, any>) => user
 )()
 
+const setSearchValueToStore = createAction(
+  GroupActionTypes.SET_SEARCH_VALUE_TO_STORE,
+  (value: string) => value
+)()
+
 export {
   getMyGroups,
   setMyGroupsToStore,
@@ -42,5 +52,7 @@ export {
   getSearchUsers,
   setSearchUsersToStore,
   getUser,
-  setUserToStore
+  setUserToStore,
+  setSearchValueToStore,
+  setAddGroupToStore
 }

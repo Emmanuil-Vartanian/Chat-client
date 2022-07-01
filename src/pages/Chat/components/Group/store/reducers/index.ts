@@ -1,10 +1,13 @@
 import { createReducer } from 'typesafe-actions'
 import { combineReducers } from 'redux'
+import { orderBy } from 'lodash'
 
 import {
+  setAddGroupToStore,
   setMyGroupsToStore,
   setMyGroupToStore,
   setSearchUsersToStore,
+  setSearchValueToStore,
   setUserToStore
 } from '../actions'
 
@@ -17,21 +20,27 @@ const myGroupInitialState = {
 }
 
 const searchUsersInitialState = {
-  data: []
+  data: [],
+  value: ''
 }
 
 const getUserInitialState = {
   data: {}
 }
 
-const myGroupsReducer = createReducer(myGroupsInitialState).handleAction(
-  setMyGroupsToStore,
-  (state, { payload }) => {
+const myGroupsReducer = createReducer(myGroupsInitialState)
+  .handleAction(setMyGroupsToStore, (state, { payload }) => {
     return {
       data: [...payload]
     }
-  }
-)
+  })
+  .handleAction(setAddGroupToStore, (state, { payload }) => {
+    const newState = [...state.data, payload]
+    const sortState = orderBy(newState, ['dateChange'], ['desc'])
+    return {
+      data: sortState
+    }
+  })
 
 const myGroupReducer = createReducer(myGroupInitialState).handleAction(
   setMyGroupToStore,
@@ -42,14 +51,19 @@ const myGroupReducer = createReducer(myGroupInitialState).handleAction(
   }
 )
 
-const searchUsersReducer = createReducer(searchUsersInitialState).handleAction(
-  setSearchUsersToStore,
-  (state, { payload }) => {
+const searchUsersReducer = createReducer(searchUsersInitialState)
+  .handleAction(setSearchUsersToStore, (state, { payload }) => {
     return {
+      ...state,
       data: [...payload]
     }
-  }
-)
+  })
+  .handleAction(setSearchValueToStore, (state, { payload }) => {
+    return {
+      ...state,
+      value: payload
+    }
+  })
 
 export const getUserReducer = createReducer(getUserInitialState).handleAction(
   setUserToStore,

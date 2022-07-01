@@ -21,9 +21,10 @@ import {
 import DateUnix from 'components/DateUnix'
 import { ROUTES } from 'constants/routes'
 import { useDispatch, useSelector } from 'react-redux'
-import { setSearchUsersToStore } from '../../store/actions'
+import { setSearchUsersToStore, setSearchValueToStore } from '../../store/actions'
 import socket from 'services/socket'
 import { getCurrentUserIdSelector } from 'pages/Login/store/reducers/selectors'
+import { setMyMessagesToStore } from 'pages/Chat/components/MessageLayout/components/MessageList/store/actions'
 
 interface GroupListProps {
   groups: Record<string, any>
@@ -32,14 +33,18 @@ interface GroupListProps {
 
 const GroupList: React.FC<GroupListProps> = ({ groups, searchUsers }) => {
   const navigate = useNavigate()
-  const dispath = useDispatch()
+  const dispatch = useDispatch()
   const myUserId = useSelector(getCurrentUserIdSelector)
   const { id } = useParams()
   const [userIdOnline, setUserIdOnline] = useState(null)
 
   const handleToMessage = userId => () => {
     navigate(ROUTES.MESSAGE_PAGE.replace(':id', userId))
-    dispath(setSearchUsersToStore([]))
+    dispatch(setSearchUsersToStore([]))
+    if (!searchUsers) {
+      dispatch(setSearchValueToStore(''))
+      dispatch(setMyMessagesToStore([]))
+    }
   }
 
   const numberUnreadMessages = messages => {
@@ -76,16 +81,18 @@ const GroupList: React.FC<GroupListProps> = ({ groups, searchUsers }) => {
             <UserData>
               <UserName active={+id === user.id}>
                 <span>{user.userName}</span>
-                <ReadAndTimeBlock>
-                  {myUserId === messages[messages.length - 1]?.userSent?.id ? (
-                    messages[messages.length - 1].read ? (
-                      <DoneAllIcon />
-                    ) : (
-                      <DoneIcon />
-                    )
-                  ) : null}
-                  <span>{searchUsers && dateChange ? DateUnix({ value: dateChange }) : ''}</span>
-                </ReadAndTimeBlock>
+                {searchUsers && (
+                  <ReadAndTimeBlock>
+                    {myUserId === messages[messages.length - 1]?.userSent?.id ? (
+                      messages[messages.length - 1].read ? (
+                        <DoneAllIcon />
+                      ) : (
+                        <DoneIcon />
+                      )
+                    ) : null}
+                    <span>{dateChange ? DateUnix({ value: dateChange }) : ''}</span>
+                  </ReadAndTimeBlock>
+                )}
               </UserName>
               <LastMessageBlock>
                 {searchUsers ? <LastMessage>{lastMessage || ''}</LastMessage> : null}

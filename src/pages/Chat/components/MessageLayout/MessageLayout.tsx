@@ -5,7 +5,12 @@ import CircularProgress from '@mui/material/CircularProgress'
 
 import { MessageLayoutContainer, MessageLoading, OpenChat } from './style'
 
-import { getMyGroup, getMyGroups, setMyGroupsToStore } from '../Group/store/actions'
+import {
+  getMyGroup,
+  getMyGroups,
+  setAddGroupToStore,
+  setMyGroupsToStore
+} from '../Group/store/actions'
 import Header from './components/Header'
 import MessageList from './components/MessageList'
 import { getMyGroupSelector } from '../Group/store/reducers/selectors'
@@ -13,8 +18,8 @@ import openChat from 'assets/png/openChat.png'
 import {
   getMyMessages,
   readingMessage,
-  setMyMessagesToStore,
-  setReadMessageToStore
+  setAddMessageToStore,
+  setReadMessagesToStore
 } from './components/MessageList/store/actions'
 import { getCurrentUserIdSelector } from 'pages/Login/store/reducers/selectors'
 import { getMyMessagesSelector } from './components/MessageList/store/reducers/selectors'
@@ -45,7 +50,7 @@ const MessageLayout: React.FC = () => {
   useEffect(() => {
     socket.on('addMessage', messages => {
       if (+id === messages.userSent.id) {
-        dispatch(setMyMessagesToStore(messages))
+        dispatch(setAddMessageToStore(messages))
         dispatch(readingMessage([messages]))
         socket.emit('readingMessage', messages.group.id)
       }
@@ -61,9 +66,13 @@ const MessageLayout: React.FC = () => {
 
   useEffect(() => {
     socket.on('readingMessage', () => {
-      console.log('first2')
-      dispatch(setReadMessageToStore())
+      dispatch(setReadMessagesToStore())
       dispatch(getMyGroups(myUserId))
+    })
+    socket.on('createChat', group => {
+      if (group.userTwo.id === myUserId) {
+        dispatch(setAddGroupToStore(group))
+      }
     })
   }, [])
 
@@ -72,7 +81,7 @@ const MessageLayout: React.FC = () => {
       {id && Object.keys(group).includes('user') ? (
         <>
           <Header user={group.user} />
-          {!getMessagesLoader && getMessagesLoader !== undefined ? (
+          {!getMessagesLoader ? (
             <MessageList messages={messages} />
           ) : (
             <MessageLoading>

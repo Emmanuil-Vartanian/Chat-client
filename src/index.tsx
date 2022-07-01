@@ -11,12 +11,10 @@ const rootEl = document.getElementById('root')
 const root = createRoot(rootEl)
 
 root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <NavigateSetter />
-      <App />
-    </BrowserRouter>
-  </React.StrictMode>
+  <BrowserRouter>
+    <NavigateSetter />
+    <App />
+  </BrowserRouter>
 )
 
 // If you want your app to work offline and load faster, you can change
