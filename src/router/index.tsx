@@ -27,6 +27,7 @@ const MyRouter: React.FC = () => {
         <>
           <Route path={ROUTES.CHAT_PAGE} element={<ChatPage />} />
           <Route path={ROUTES.MESSAGE_PAGE} element={<ChatPage />} />
+          <Route path={ROUTES.PROFILE_PAGE} element={<ChatPage />} />
         </>
       )}
     </Routes>

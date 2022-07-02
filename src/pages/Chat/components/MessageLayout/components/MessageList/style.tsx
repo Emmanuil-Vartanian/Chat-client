@@ -55,6 +55,7 @@ export const SendMessageBlock = styled.div`
 `
 
 export const InputFieldStyled = styled(InputField)`
+  // display: none !important;
   .MuiInputBase-input {
     background: #fff;
     border-radius: 4px;
@@ -76,6 +77,33 @@ export const InputFieldStyled = styled(InputField)`
     :first-child > svg {
       transform: rotate(-45deg);
       margin-right: 10px;
+    }
+  }
+`
+
+export const PickerEmoji = styled.div`
+  position: absolute;
+  bottom: 92%;
+  right: 2.5%;
+  height: 415px;
+  section.emoji-mart {
+    > div:first-child {
+      button.emoji-mart-anchor {
+        cursor: pointer;
+      }
+      button.emoji-mart-anchor-selected {
+        color: #005bf5 !important;
+        > .emoji-mart-anchor-bar {
+          background-color: #005bf5 !important;
+        }
+      }
+    }
+    > div:last-child.emoji-mart-bar,
+    .emoji-mart-search {
+      display: none;
+    }
+    .emoji-mart-scroll {
+      height: 350px;
     }
   }
 `
@@ -109,5 +137,11 @@ export const TimeAndReadMessage = styled.div`
   > svg {
     width: 16px;
     height: 16px;
+  }
+`
+
+export const ContentMessage = styled.div`
+  > span {
+    margin: 0px -1px;
   }
 `

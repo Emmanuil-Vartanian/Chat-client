@@ -112,6 +112,11 @@ export const LastMessage = styled.div`
   height: 1.4em;
   color: #979797;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  > span {
+    margin: 0px 1px;
+  }
 `
 
 export const UserOnline = styled.div`

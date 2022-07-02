@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import DoneIcon from '@mui/icons-material/Done'
 import DoneAllIcon from '@mui/icons-material/DoneAll'
+import { Emoji } from 'emoji-mart'
 
 import {
   GroupBlock,
@@ -25,6 +26,7 @@ import { setSearchUsersToStore, setSearchValueToStore } from '../../store/action
 import socket from 'services/socket'
 import { getCurrentUserIdSelector } from 'pages/Login/store/reducers/selectors'
 import { setMyMessagesToStore } from 'pages/Chat/components/MessageLayout/components/MessageList/store/actions'
+import reactStringReplace from 'react-string-replace'
 
 interface GroupListProps {
   groups: Record<string, any>
@@ -95,7 +97,13 @@ const GroupList: React.FC<GroupListProps> = ({ groups, searchUsers }) => {
                 )}
               </UserName>
               <LastMessageBlock>
-                {searchUsers ? <LastMessage>{lastMessage || ''}</LastMessage> : null}
+                {searchUsers ? (
+                  <LastMessage>
+                    {reactStringReplace(lastMessage, /:(.+?):/g, (match, i) => (
+                      <Emoji key={i} emoji={match} set="google" size={16} />
+                    )) || ''}
+                  </LastMessage>
+                ) : null}
                 {numberUnreadMessages(messages) ? (
                   <UnreadMessages>{numberUnreadMessages(messages)}</UnreadMessages>
                 ) : null}

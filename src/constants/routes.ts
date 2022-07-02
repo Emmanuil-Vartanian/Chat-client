@@ -3,11 +3,13 @@ const CHAT_PAGE = '/'
 const LOGIN_PAGE = '/login'
 const REGISTRATION_PAGE = '/registration'
 const MESSAGE_PAGE = '/:id'
+const PROFILE_PAGE = '/profile/:id'
 
 export const ROUTES = {
   NOT_FOUND_PAGE,
   CHAT_PAGE,
   LOGIN_PAGE,
   REGISTRATION_PAGE,
-  MESSAGE_PAGE
+  MESSAGE_PAGE,
+  PROFILE_PAGE
 }

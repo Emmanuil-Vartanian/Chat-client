@@ -26,6 +26,9 @@ import { Form } from 'react-final-form'
 import GroupList from './compomemts/GroupList'
 import { logOutUser } from 'pages/Login/store/actions'
 import socket from 'services/socket'
+import { debaunce } from 'services/debaunce'
+import { push } from 'components/Navigation/History'
+import { ROUTES } from 'constants/routes'
 
 const Group: React.FC = () => {
   const dispatch = useDispatch()
@@ -51,7 +54,13 @@ const Group: React.FC = () => {
     }
   }
 
-  const handleLogout = () => {
+  const handleGoProfile = popup => () => {
+    popup.close()
+    push(ROUTES.PROFILE_PAGE.replace(':id', userId))
+  }
+
+  const handleLogout = popup => () => {
+    popup.close()
     dispatch(logOutUser())
   }
 
@@ -75,19 +84,19 @@ const Group: React.FC = () => {
 
           <PopupState variant="popover" popupId="demo-popup-menu">
             {popupState => (
-              <React.Fragment>
+              <>
                 <MenuIcon {...bindTrigger(popupState)} />
                 <Menu {...bindMenu(popupState)}>
-                  <MenuItem onClick={popupState.close}>Настройки</MenuItem>
-                  <MenuItem onClick={handleLogout}>Выйти</MenuItem>
+                  <MenuItem onClick={handleGoProfile(popupState)}>Настройки</MenuItem>
+                  <MenuItem onClick={handleLogout(popupState)}>Выйти</MenuItem>
                 </Menu>
-              </React.Fragment>
+              </>
             )}
           </PopupState>
         </div>
 
         <Form
-          onSubmit={handleFormSubmit}
+          onSubmit={debaunce(handleFormSubmit, 500)}
           initialValues={{ search: searchValue }}
           render={({ handleSubmit }) => (
             <form id={'search-user-form'} onSubmit={handleSubmit}>

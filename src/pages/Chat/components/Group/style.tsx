@@ -15,6 +15,9 @@ export const ChatInfo = styled.div`
     justify-content: space-between;
     align-items: center;
     color: #6a6a6a;
+    > svg {
+      cursor: pointer;
+    }
   }
 `
 
