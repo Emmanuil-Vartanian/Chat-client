@@ -40,10 +40,10 @@ const MessageList: React.FC<MessageListProps> = ({ messages }) => {
   const messagesRef = useRef(null)
 
   const [emojiPickerVisible, setShowEmojiPicker] = useState(false)
-  const [inputValue, setInputValue] = useState({ native: '', colons: '' })
+  const [inputValue, setInputValue] = useState('')
 
   const handleChangeInputValue = e => {
-    setInputValue({ native: e.target.value, colons: e.target.value })
+    setInputValue(e.target.value)
   }
 
   const toggleEmojiPickerOpen = () => {
@@ -55,10 +55,7 @@ const MessageList: React.FC<MessageListProps> = ({ messages }) => {
   }
 
   const addEmoji = obj => {
-    setInputValue(prev => ({
-      native: (prev.native + ' ' + obj.native).trim(),
-      colons: (prev.colons + ' ' + obj.colons).trim()
-    }))
+    setInputValue(prev => (prev + ' ' + obj.native).trim())
   }
 
   const unreadMessages = messages => {
@@ -69,9 +66,9 @@ const MessageList: React.FC<MessageListProps> = ({ messages }) => {
     })
   }
 
-  const handleFormSubmit = () => {
-    dispatch(createMessage({ message: inputValue.colons }))
-    setInputValue({ colons: '', native: '' })
+  const handleFormSubmit = data => {
+    dispatch(createMessage(data))
+    setInputValue('')
     toggleEmojiPickerClose()
   }
 
@@ -122,7 +119,7 @@ const MessageList: React.FC<MessageListProps> = ({ messages }) => {
       <Form
         onSubmit={handleFormSubmit}
         initialValues={{
-          message: inputValue.native
+          message: inputValue
         }}
         render={({ handleSubmit, form }) => (
           <form
@@ -151,7 +148,6 @@ const MessageList: React.FC<MessageListProps> = ({ messages }) => {
                           <Picker
                             onSelect={addEmoji}
                             set="google"
-                            notFoundEmoji
                             emojiSize={30}
                             i18n={{
                               categories: {

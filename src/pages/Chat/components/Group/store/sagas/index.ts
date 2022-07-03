@@ -9,6 +9,8 @@ import {
   setSearchUsersToStore,
   setUserToStore
 } from '../actions'
+import { clearEffectLoading, setEffectLoading } from 'containers/App/store/actions'
+import { EFFECT_LOADING } from 'constants/effectLoading'
 
 export function* myGroupsSaga(action): SagaIterator {
   const userId = action.payload
@@ -57,14 +59,17 @@ export function* getUserSaga(action): SagaIterator {
   const userId = action.payload
 
   try {
+    yield put(setEffectLoading(EFFECT_LOADING.GET_USER))
     const { data, status } = yield call(getUserAPI, userId)
 
     if (status === 200) {
       yield put(setUserToStore(data))
+      yield put(clearEffectLoading(EFFECT_LOADING.GET_USER))
     }
   } catch (error) {
     const { response } = error
     console.error(GroupActionTypes.GET_USER, response)
+    yield put(clearEffectLoading(EFFECT_LOADING.GET_USER))
   }
 }
 

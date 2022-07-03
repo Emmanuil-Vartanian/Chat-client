@@ -7,6 +7,8 @@ import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { UserAvatar, UserNotAvatar } from 'pages/Chat/components/Group/compomemts/GroupList/style'
 import { HeaderContainer, UserInfoBlock } from './style'
 import socket from 'services/socket'
+import { push } from 'components/Navigation/History'
+import { ROUTES } from 'constants/routes'
 
 interface HeaderProps {
   user: Record<string, any>
@@ -14,6 +16,10 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ user }) => {
   const [userIdOnline, setUserIdOnline] = useState(null)
+
+  const handleGoProfile = () => {
+    push(ROUTES.PROFILE_PAGE.replace(':id', user.id))
+  }
 
   useEffect(() => {
     socket.on('userOnline', data => {
@@ -23,13 +29,13 @@ const Header: React.FC<HeaderProps> = ({ user }) => {
 
   return (
     <HeaderContainer>
-      <UserInfoBlock>
+      <UserInfoBlock onClick={handleGoProfile}>
         <UserAvatar>
           {user.avatar ? (
             <img src={user.avatar} alt={user.avatar} />
           ) : (
             <UserNotAvatar>
-              <span>{user.userName.substr(0, 1)}</span>
+              <span>{user.userName.substring(0, 1)}</span>
             </UserNotAvatar>
           )}
         </UserAvatar>

@@ -15,4 +15,6 @@ export const HeaderContainer = styled.div`
 export const UserInfoBlock = styled.div`
   display: flex;
   align-items: center;
+  cursor: pointer;
+  width: 100%;
 `
